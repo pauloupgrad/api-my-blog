@@ -7,10 +7,11 @@ const app = express()
 const PORT = 3000
 
 // ROTAS
-app.use(userRoute)
+app.use(express.json())
+app.use('/user',userRoute)
 
 
 // INICIALIZAÇÃO
-app.listen(PORT, () => {
-    console.log(`Servidor aberto em: http://localhost:${PORT}`)
-})
+app.listen(PORT, () =>
+    console.log(`Servidor rodando em: http://localhost:${PORT}`)
+)
