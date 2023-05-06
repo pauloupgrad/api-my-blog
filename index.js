@@ -1,12 +1,16 @@
 // IMPORTS
 import express from "express"
+import dotenv from "dotenv"
+
 import connectDatabase from "./src/database/db.js"
 import userRoute from "./src/routes/user.route.js"
+
+dotenv.config()
 
 const app = express()
 
 // CONSTANTES
-const PORT = 3000
+const port = process.env.PORT || 3000
 // CONEXÃO COM O BANCO DE DADOS
 connectDatabase()
 // ROTAS
@@ -15,6 +19,6 @@ app.use("/user",userRoute)
 
 
 // INICIALIZAÇÃO
-app.listen(PORT, () =>
-    console.log(`Servidor rodando em: http://localhost:${PORT}`)
+app.listen(port, () =>
+    console.log(`Servidor rodando em: http://localhost:${port}`)
 )

@@ -3,7 +3,7 @@ import mongoose from "mongoose"
 const connectDatabase = () => {
     console.log("Aguarde estamaos conectando!")
 
-    mongoose.connect("mongodb+srv://pauloupgrad:QvWMdOhKY0IDCxS7@cluster0.wawzici.mongodb.net/?retryWrites=true&w=majority", {
+    mongoose.connect(process.env.MONGODB_URI, {
         useNewUrlParser: true,
         useUnifiedTopology: true
     })
