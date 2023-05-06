@@ -12,7 +12,7 @@ connectDatabase()
 
 // ROTAS
 app.use(express.json())
-app.use('/user',userRoute)
+app.use("/user",userRoute)
 
 
 // INICIALIZAÇÃO

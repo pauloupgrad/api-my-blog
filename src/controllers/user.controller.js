@@ -1,27 +1,78 @@
 const userService = require("../services/user.service")
+const mongoose = require('mongoose')
+
+// CREATE - CRIA UM USUÁRIO NO BANCO
 const create = async (req, res) => {
+   // Desistrutura todos os campos enviados do form 
    const { name, username, email, password, avatar, background } = req.body
-   
-   if(!name || !username ||!email ||!password ||!avatar ||!background){
-      res.status(400).send({message:"Envie todos os campos para registro"})
+
+   // verifica se todos os campos estao preenchidos
+   if (!name || !username || !email || !password || !avatar || !background) {
+      res.status(400).send({ message: "Envie todos os campos para registro" })
    }
 
-   const user = await userService.create(req.body)
+   // Envia todos os usuários para o service cadastrar no banco 
+   const user = await userService.createService(req.body)
 
-   if(!user){
-      return res.status(400).send({message: "Erro ao criar usuário"})
+   // Verifica se o cadastro foi com sucesso se não manda uma menssagem de erro
+   if (!user) {
+      return res.status(400).send({ message: "Erro ao criar usuário" })
    }
+
+   // Manda todos os usuarios e mensagem de sucesso no cadastro
    res.status(201).send({
       message: "Usuário criado com sucesso!",
       user: {
          id: user._id,
          name,
          username,
-         email,                
+         email,
          avatar,
          background
       }
    })
 }
 
-module.exports = { create }
+// BUSCA TODOS OS USUÁRIOS NO BANCO
+const findAll = async (req, res) => {
+
+   // Busca todos os usuários no service
+   const users = await userService.findAllService()
+
+   // Verifica se os usuários existe
+   if (users.length === 0) {
+      return res.status(400).send({ message: "Não há usuários cadastrados!" })
+   }
+
+   // Manda os usários encontrados no banco 
+   res.status(200).send(users)
+}
+
+// BUSCA UM USUÁRIO NO BANCO PELO ID
+const findById = async (req, res) => {
+
+   // Pega o parametro
+   const id = req.params.id
+
+   // Verifica se o id do mongo é válido
+   if(!mongoose.Types.ObjectId.isValid(id)){
+      return res.status(400).send({ message: "ID Invalido!" })
+   }
+   
+   // Busca o usuario pelo id no service
+   const user = await userService.findByIdService(id)
+
+   // Verifica se o usuário existe
+   if (!user) {
+      return res.status(400).send({ message: "Usuários não existe!" })
+   }
+
+   // Manda o usuário encontrado no banco
+   res.status(200).send(user)
+}
+
+module.exports = {
+   create,
+   findAll,
+   findById,
+}
