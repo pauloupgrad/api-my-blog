@@ -1,6 +1,8 @@
-const route = require('express').Router()
-const userControler = require('../controllers/user.controller')
-const { isValidId, isValidUser } = require("../middlewares/global.middlewares")
+import { Router } from "express"
+import userControler from "../controllers/user.controller.js"
+import { isValidId, isValidUser } from "../middlewares/global.middlewares.js"
+
+const route = Router()
 
 // ROTA PARA CRIAR USUÁRIO
 route.post('/', userControler.create)
@@ -13,4 +15,4 @@ route.patch("/:id", isValidId, isValidUser, userControler.update)
 // ROTA PARA DELETAR UM USUÁRIO POR ID
 route.delete("/:id", isValidId, isValidUser, userControler.deleteUser)
 
-module.exports = route
+export default route

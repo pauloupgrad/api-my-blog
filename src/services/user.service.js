@@ -1,4 +1,4 @@
-const User = require("../models/User")
+import User from "../models/User.js"
 
 // SERVIÇO PARA CADASTRAR USUÁRIO NO BANCO
 const createService = (body) => User.create(body)
@@ -15,7 +15,8 @@ const updateService = (
 )
 // SERVIÇO PARA DELETAR UM USUÁRIO NO BANCO POR ID
 const deleteUserService = (id) => User.findOneAndDelete({ _id: id })
-module.exports = {
+
+export default {
     createService,
     findAllService,
     findByIdService,

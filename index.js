@@ -1,15 +1,14 @@
 // IMPORTS
-const express = require('express')
-const app = express()
-const connectDatabase = require('./src/database/db')
+import express from "express"
+import connectDatabase from "./src/database/db.js"
+import userRoute from "./src/routes/user.route.js"
 
-const userRoute = require('./src/routes/user.route')
+const app = express()
 
 // CONSTANTES
 const PORT = 3000
-
+// CONEXÃO COM O BANCO DE DADOS
 connectDatabase()
-
 // ROTAS
 app.use(express.json())
 app.use("/user",userRoute)

@@ -1,32 +1,39 @@
-const mongoose = require('mongoose')
-const userService = require("../services/user.service")
+import mongoose from "mongoose"
+import userService from "../services/user.service.js"
 
 // VALIDA O ID DO BANCO MONGODB
-const isValidId = (req, res, next) => {
-    // Pega o parametro
-    const id = req.params.id
+export const isValidId = (req, res, next) => {
+    try { // Pega o parametro
+        const id = req.params.id
 
-    // Verifica se o id do mongo é válido
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-        return res.status(400).send({ message: "ID Invalido!" })
+        // Verifica se o id do mongo é válido
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).send({ message: "ID Invalido!" })
+        }
+
+        next()
+    } catch (error) {
+        res.status(500).send({ message: error.message })
     }
-
-    next()
 }
 // VALIDA SE O USUÁRIO EXISTE
-const isValidUser = async (req, res, next) => {
-    // Pega o parametro
-    const id = req.params.id
+export const isValidUser = async (req, res, next) => {
+    try {// Pega o parametro
+        const id = req.params.id
 
-    // Busca o usuario pelo id no service
-    const user = await userService.findByIdService(id)
+        // Busca o usuario pelo id no service
+        const user = await userService.findByIdService(id)
 
-    // Verifica se o usuário existe
-    if (!user) {
-        return res.status(400).send({ message: "Usuários não existe!" })
+        // Verifica se o usuário existe
+        if (!user) {
+            return res.status(400).send({ message: "Usuários não existe!" })
+        }
+
+        req.id = id
+        req.user = user
+
+        next()
+    } catch (error) {
+        res.status(500).send({ message: error.message })
     }
-
-    next()
 }
-
-module.exports = { isValidId, isValidUser }
