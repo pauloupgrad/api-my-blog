@@ -55,10 +55,10 @@ const findById = async (req, res) => {
    const id = req.params.id
 
    // Verifica se o id do mongo é válido
-   if(!mongoose.Types.ObjectId.isValid(id)){
+   if (!mongoose.Types.ObjectId.isValid(id)) {
       return res.status(400).send({ message: "ID Invalido!" })
    }
-   
+
    // Busca o usuario pelo id no service
    const user = await userService.findByIdService(id)
 
@@ -70,9 +70,69 @@ const findById = async (req, res) => {
    // Manda o usuário encontrado no banco
    res.status(200).send(user)
 }
+// ATUALIZAR USUÁRIO NO BANCO PELO ID
+const update = async (req, res) => {
+   // Desistrutura todos os campos enviados do form 
+   const { name, username, email, password, avatar, background } = req.body
 
+   // verifica se todos os campos estao preenchidos
+   if (!name && !username && !email && !password && !avatar && !background) {
+      res.status(400).send({ message: "Envie um dos campos para ser atualizado" })
+   }
+
+   // Pega o parametro
+   const id = req.params.id
+
+   // Verifica se o id do mongo é válido
+   if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).send({ message: "ID Invalido!" })
+   }
+
+   // Busca o usuario pelo id no service
+   const user = await userService.findByIdService(id)
+
+   // Verifica se o usuário existe
+   if (!user) {
+      return res.status(400).send({ message: "Usuários não existe!" })
+   }
+
+   await userService.updateService(
+      id,
+      name,
+      username,
+      email,
+      password,
+      avatar,
+      background
+   )
+
+   res.send({ message: "Usuário atualizado com sucesso!" })
+
+}
+// DELETAR UM USUÁRIO DO BANCO PELO ID
+const deleteUser = async (req, res) => {
+   // Pega o parametro
+   const id = req.params.id
+
+   // Verifica se o id do mongo é válido
+   if (!mongoose.Types.ObjectId.isValid(id)) {
+      return res.status(400).send({ message: "ID Invalido!" })
+   }
+
+   // Busca o usuario pelo id no service
+   const user = await userService.deleteUserService(id)
+
+   // Verifica se o usuário existe
+   if (!user) {
+      return res.status(400).send({ message: "Usuários não deletado!" })
+   }
+
+   res.send({ message: "Usuário deletado com sucesso!" })
+}
 module.exports = {
    create,
    findAll,
    findById,
+   update,
+   deleteUser
 }
