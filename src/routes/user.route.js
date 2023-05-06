@@ -2,17 +2,17 @@ import { Router } from "express"
 import userControler from "../controllers/user.controller.js"
 import { isValidId, isValidUser } from "../middlewares/global.middlewares.js"
 
-const route = Router()
+const router = Router()
 
 // ROTA PARA CRIAR USUÁRIO
-route.post('/', userControler.create)
+router.post('/', userControler.create)
 // ROTA PARA BUSCAR TODOS OS USUÁRIOS
-route.get("/", userControler.findAll)
+router.get("/", userControler.findAll)
 // ROTA PARA BUSCAR UM USUÁRIO POR ID
-route.get("/:id", isValidId, isValidUser, userControler.findById)
+router.get("/:id", isValidId, isValidUser, userControler.findById)
 // ROTA PARA ATUALIZAR USUÁRIO POR ID
-route.patch("/:id", isValidId, isValidUser, userControler.update)
+router.patch("/:id", isValidId, isValidUser, userControler.update)
 // ROTA PARA DELETAR UM USUÁRIO POR ID
-route.delete("/:id", isValidId, isValidUser, userControler.deleteUser)
+router.delete("/:id", isValidId, isValidUser, userControler.deleteUser)
 
-export default route
+export default router
