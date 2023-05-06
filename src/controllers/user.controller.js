@@ -1,5 +1,4 @@
 const userService = require("../services/user.service")
-const mongoose = require('mongoose')
 
 // CREATE - CRIA UM USUÁRIO NO BANCO
 const create = async (req, res) => {
@@ -54,18 +53,8 @@ const findById = async (req, res) => {
    // Pega o parametro
    const id = req.params.id
 
-   // Verifica se o id do mongo é válido
-   if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).send({ message: "ID Invalido!" })
-   }
-
    // Busca o usuario pelo id no service
    const user = await userService.findByIdService(id)
-
-   // Verifica se o usuário existe
-   if (!user) {
-      return res.status(400).send({ message: "Usuários não existe!" })
-   }
 
    // Manda o usuário encontrado no banco
    res.status(200).send(user)
@@ -83,18 +72,8 @@ const update = async (req, res) => {
    // Pega o parametro
    const id = req.params.id
 
-   // Verifica se o id do mongo é válido
-   if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).send({ message: "ID Invalido!" })
-   }
-
    // Busca o usuario pelo id no service
    const user = await userService.findByIdService(id)
-
-   // Verifica se o usuário existe
-   if (!user) {
-      return res.status(400).send({ message: "Usuários não existe!" })
-   }
 
    await userService.updateService(
       id,
@@ -113,26 +92,10 @@ const update = async (req, res) => {
 const deleteUser = async (req, res) => {
    // Pega o parametro
    const id = req.params.id
-
-   // Verifica se o id do mongo é válido
-   if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).send({ message: "ID Invalido!" })
-   }
-
    // Busca o usuario pelo id no service
    const user = await userService.deleteUserService(id)
-
-   // Verifica se o usuário existe
-   if (!user) {
-      return res.status(400).send({ message: "Usuários não deletado!" })
-   }
-
+   // Retorna mensagem para o usuário
    res.send({ message: "Usuário deletado com sucesso!" })
 }
-module.exports = {
-   create,
-   findAll,
-   findById,
-   update,
-   deleteUser
-}
+
+module.exports = { create, findAll, findById, update, deleteUser }
