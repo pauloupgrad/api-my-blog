@@ -1,5 +1,5 @@
-import { createService, findAllService, countNews } from '../services/news.service.js'
-import { ObjectId } from 'mongoose'
+import { createService, findAllService, countNews, topNewsService } from '../services/news.service.js'
+
 
 // CREATE - CRIA UM NEWS NO BANCO
 const create = async (req, res) => {
@@ -35,10 +35,10 @@ const findAll = async (req, res) => {
         limit = Number(limit)
         offset = Number(offset)
 
-        if(!limit){
+        if (!limit) {
             limit = 5
         }
-        if(!offset){
+        if (!offset) {
             offset = 0
         }
 
@@ -46,7 +46,7 @@ const findAll = async (req, res) => {
         const news = await findAllService(offset, limit)
         const total = await countNews()
         const currentUrl = req.baseUrl
-        
+
         const next = offset + limit
         const nextUrl = next < total ? `${currentUrl}?limit=${limit}&offset=${next}` : null
 
@@ -66,17 +66,44 @@ const findAll = async (req, res) => {
             total,
 
             results: news.map(newsItem => ({
-               id: newsItem._id,
-               title: newsItem.title,
-               text: newsItem.text,
-               banner: newsItem.banner,
-               likes: newsItem.likes,
-               comments: newsItem.comments,
-               name: newsItem.user.name,
-               username: newsItem.user.username,
-               useravatar: newsItem.user.avatar,
+                id: newsItem._id,
+                title: newsItem.title,
+                text: newsItem.text,
+                banner: newsItem.banner,
+                likes: newsItem.likes,
+                comments: newsItem.comments,
+                name: newsItem.user.name,
+                username: newsItem.user.username,
+                useravatar: newsItem.user.avatar,
 
             }))
+        })
+    } catch (error) {
+        res.status(500).send({ message: error.message })
+    }
+}
+
+// BUSCA A NOTICIA DESTAQUE
+const topNews = async (req, res) => {
+    try {
+        const news = await topNewsService()
+
+        if (!news) {
+            return res.status(400).send({ message: "Esta noticia não existe!" })
+        }
+
+        res.send({
+            news: {
+                id: news._id,
+                title: news.title,
+                text: news.text,
+                banner: news.banner,
+                likes: news.likes,
+                comments: news.comments,
+                name: news.user.name,
+                username: news.user.username,
+                useravatar: news.user.avatar,
+            }
         })
     } catch (error) {
         res.status(500).send({ message: error.message })
@@ -86,4 +113,5 @@ const findAll = async (req, res) => {
 export {
     create,
     findAll,
+    topNews,
 }
