@@ -1,8 +1,8 @@
-import { createService, findAllService, countNews, topNewsService } from '../services/news.service.js'
+import { createService, findAllService, countNews, topNewsService, findByIdService } from '../services/news.service.js'
 
 
 // CREATE - CRIA UM NEWS NO BANCO
-const create = async (req, res) => {
+export const create = async (req, res) => {
     try {
 
         // Desistrutura todos os campos enviados do form
@@ -28,7 +28,7 @@ const create = async (req, res) => {
 }
 
 // BUSCA TODOS OS USUÁRIOS NO BANCO
-const findAll = async (req, res) => {
+export const findAll = async (req, res) => {
     try {
         let { limit, offset } = req.query
 
@@ -83,15 +83,20 @@ const findAll = async (req, res) => {
     }
 }
 
-// BUSCA A NOTICIA DESTAQUE
-const topNews = async (req, res) => {
+// BUSCA UMA NOTICIA NO BANCO PELO ID
+export const findById = async (req, res) => {
     try {
-        const news = await topNewsService()
+        // Pega o id pelo parametro
+        const { id } = req.params
 
+        // Busca o noticia pelo id no service
+        const news = await findByIdService(id)
+
+        // Verifica se a noticia existe
         if (!news) {
             return res.status(400).send({ message: "Esta noticia não existe!" })
         }
-
+        // Manda o noticia encontrado no banco para o cliente
         res.send({
             news: {
                 id: news._id,
@@ -110,8 +115,33 @@ const topNews = async (req, res) => {
     }
 }
 
-export {
-    create,
-    findAll,
-    topNews,
+// BUSCA A NOTICIA DESTAQUE
+export const topNews = async (req, res) => {
+    try {
+        // Busca a noticia destaque no service
+        const news = await topNewsService()
+        // Verifica se a noticia destaque existe
+        if (!news) {
+            return res.status(400).send({ message: "Esta noticia não existe!" })
+        }
+        // Manda para o cliente
+        res.send({
+            news: {
+                id: news._id,
+                title: news.title,
+                text: news.text,
+                banner: news.banner,
+                likes: news.likes,
+                comments: news.comments,
+                name: news.user.name,
+                username: news.user.username,
+                useravatar: news.user.avatar,
+            }
+        })
+    } catch (error) {
+        res.status(500).send({ message: error.message })
+    }
 }
+
+
+

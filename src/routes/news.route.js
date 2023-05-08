@@ -1,5 +1,5 @@
 import { Router } from "express"
-import { create, findAll, topNews } from "../controllers/news.controller.js"
+import { create, findAll, findById, topNews } from "../controllers/news.controller.js"
 import { authMiddleware } from "../middlewares/auth.middlewares.js"
 
 const router = Router()
@@ -10,6 +10,8 @@ router.post('/', authMiddleware, create)
 router.get("/", findAll)
 // ROTA PARA BUSCAR A NOTICIA EM DESTAQUE
 router.get("/top", topNews)
+// BUSCA UMA NOTICIA PELO ID
+router.get("/:id", findById)
 
 
 export default router
