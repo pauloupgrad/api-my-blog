@@ -3,7 +3,8 @@ import { ObjectId } from 'mongoose'
 
 // CREATE - CRIA UM NEWS NO BANCO
 const create = async (req, res) => {
-    try {
+    try {   
+
         // Desistrutura todos os campos enviados do form
         const { title, text, banner } = req.body
 
@@ -16,7 +17,7 @@ const create = async (req, res) => {
             title,
             text,
             banner,
-            user: { _id: "6456450064533790c719c737" }
+            user: req.userId
         })
 
         res.status(201).send("News criada com sucesso!")
