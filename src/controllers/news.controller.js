@@ -1,4 +1,4 @@
-import { createService, findAllService, countNews, topNewsService, findByIdService, searchByTitleService } from '../services/news.service.js'
+import { createService, findAllService, countNews, topNewsService, findByIdService, searchByTitleService, byUserService } from '../services/news.service.js'
 
 
 // CREATE - CRIA UM NEWS NO BANCO
@@ -158,6 +158,39 @@ export const searchByTitle = async (req, res) => {
 
         // Manda o noticia encontrado na pesquisa para o cliente
         res.send({
+            results: news.map(newsItem => ({
+                id: newsItem._id,
+                title: newsItem.title,
+                text: newsItem.text,
+                banner: newsItem.banner,
+                likes: newsItem.likes,
+                comments: newsItem.comments,
+                name: newsItem.user.name,
+                username: newsItem.user.username,
+                useravatar: newsItem.user.avatar,
+
+            }))
+        })
+
+    } catch (error) {
+        res.status(500).send({ message: error.message })
+    }
+}
+
+// BUSCA TODAS NEWS DE UM UNICO USER PELO ID DO TOKEN
+export const byUser = async (req, res) => {
+    try{
+        const id = req.userId
+
+        const news = await byUserService(id)
+
+        // Verifica se a noticia destaque existe
+        if (!news) {
+            return res.status(400).send({ message: "Esta noticia não existe!" })
+        }
+
+         // Manda todas as noticia encontrado do user logado
+         res.send({
             results: news.map(newsItem => ({
                 id: newsItem._id,
                 title: newsItem.title,

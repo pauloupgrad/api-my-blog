@@ -15,3 +15,7 @@ export const topNewsService = () => News.findOne().sort({ _id: -1 }).populate("u
 export const searchByTitleService = (title) => News.find({
     title: { $regex: `${title || ""}`, $options: "i" },
 }).sort({ _id: -1 }).populate("user")
+// BUSCA NO BANCO TODAS NEWS DO USER LOGADO
+export const byUserService = (id) => News.find({
+    user: id
+}).sort({ _id: -1 }).populate("user")
