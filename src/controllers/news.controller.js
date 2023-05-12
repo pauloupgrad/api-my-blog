@@ -1,4 +1,4 @@
-import { createService, findAllService, countNews, topNewsService, findByIdService } from '../services/news.service.js'
+import { createService, findAllService, countNews, topNewsService, findByIdService, searchByTitleService } from '../services/news.service.js'
 
 
 // CREATE - CRIA UM NEWS NO BANCO
@@ -138,6 +138,40 @@ export const topNews = async (req, res) => {
                 useravatar: news.user.avatar,
             }
         })
+    } catch (error) {
+        res.status(500).send({ message: error.message })
+    }
+}
+
+// SEARCH PELO TITULO DA NEWS
+export const searchByTitle = async (req, res) => {
+    try {
+        // Pega o titulo digitado na pesquisa
+        const { title } = req.query
+
+        // Busca a noticia da pesquisa por titulo no service
+        const news = await searchByTitleService(title)
+        // Verifica se a noticia existe
+        if (news.length === 0) {
+            return res.status(400).send({ message: "Esta noticia não existe!" })
+        }
+
+        // Manda o noticia encontrado na pesquisa para o cliente
+        res.send({
+            results: news.map(newsItem => ({
+                id: newsItem._id,
+                title: newsItem.title,
+                text: newsItem.text,
+                banner: newsItem.banner,
+                likes: newsItem.likes,
+                comments: newsItem.comments,
+                name: newsItem.user.name,
+                username: newsItem.user.username,
+                useravatar: newsItem.user.avatar,
+
+            }))
+        })
+
     } catch (error) {
         res.status(500).send({ message: error.message })
     }

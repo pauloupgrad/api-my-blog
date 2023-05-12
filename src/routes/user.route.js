@@ -15,4 +15,5 @@ router.patch("/:id", isValidId, isValidUser, userControler.update)
 // ROTA PARA DELETAR UM USUÁRIO POR ID
 router.delete("/:id", isValidId, isValidUser, userControler.deleteUser)
 
+
 export default router
